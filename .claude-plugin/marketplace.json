@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "wayfinder-map",
+  "description": "A tree view of /wayfinder maps on GitHub Issues, for Claude Code.",
+  "owner": {
+    "name": "John Lito Bardinas",
+    "url": "https://github.com/johnLitoBardinas"
+  },
+  "plugins": [
+    {
+      "name": "wayfinder-map",
+      "description": "Draw a /wayfinder map as a tree: tickets, status, blocking edges, frontier.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

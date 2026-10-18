@@ -1,0 +1,13 @@
+{
+  "name": "wayfinder-map",
+  "version": "1.0.0",
+  "description": "See a /wayfinder map at a glance: the map issue, its tickets, blocking edges and the frontier, drawn as a tree in your terminal.",
+  "author": {
+    "name": "John Lito Bardinas",
+    "url": "https://github.com/johnLitoBardinas"
+  },
+  "homepage": "https://github.com/johnLitoBardinas/wayfinder-map",
+  "repository": "https://github.com/johnLitoBardinas/wayfinder-map",
+  "license": "MIT",
+  "keywords": ["wayfinder", "github-issues", "planning", "skills"]
+}
