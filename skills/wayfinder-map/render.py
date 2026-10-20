@@ -13,24 +13,20 @@ def gh(*args):
     return json.loads(out) if out.strip() else None
 
 
-def main():
-    args = sys.argv[1:]
-    if not args:
-        sys.exit("usage: render.py <map-number> [--repo owner/name]")
-    map_no = int(args[0].lstrip("#"))
-    repo = args[args.index("--repo") + 1] if "--repo" in args else gh(
-        "repo", "view", "--json", "nameWithOwner"
-    )["nameWithOwner"]
+def fetch(repo, map_no):
     base = f"repos/{repo}/issues"
-
     root = gh("api", f"{base}/{map_no}")
     children = gh("api", "--paginate", f"{base}/{map_no}/sub_issues") or []
+    blockers = {
+        c["number"]: [b for b in gh("api", "--paginate", f"{base}/{c['number']}/dependencies/blocked_by") or []]
+        for c in children
+    }
+    return root, children, blockers
+
+
+def render(root, map_no, children, blockers):
     order = [c["number"] for c in children]
     nodes = {c["number"]: c for c in children}
-    blockers = {
-        n: [b for b in gh("api", "--paginate", f"{base}/{n}/dependencies/blocked_by") or []]
-        for n in order
-    }
 
     def closed(n):
         return nodes[n]["state"] == "closed"
@@ -103,7 +99,19 @@ def main():
         f"{done}/{len(order)} closed · frontier: "
         + (", ".join(f"{nodes[n]['title']} (#{n})" for n in frontier) or "none"),
     ]
-    print("\n".join(lines))
+    return "\n".join(lines)
+
+
+def main():
+    args = sys.argv[1:]
+    if not args:
+        sys.exit("usage: render.py <map-number> [--repo owner/name]")
+    map_no = int(args[0].lstrip("#"))
+    repo = args[args.index("--repo") + 1] if "--repo" in args else gh(
+        "repo", "view", "--json", "nameWithOwner"
+    )["nameWithOwner"]
+    root, children, blockers = fetch(repo, map_no)
+    print(render(root, map_no, children, blockers))
 
 
 if __name__ == "__main__":
